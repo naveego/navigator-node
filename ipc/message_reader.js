@@ -128,11 +128,11 @@ _.extend(StreamMessageReader.prototype, {
         if(!headers) {
           return;
         }
-        let contentLength = headers['Content-Length'];
+        var contentLength = headers['Content-Length'];
         if(!contentLength) {
           throw new Error("header must provide a content-length");
         }
-        let length = parseInt(contentLength);
+        var length = parseInt(contentLength);
         if (isNaN(length)) {
           throw new Error("conent-length must be a number");
         }
