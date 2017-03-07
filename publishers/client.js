@@ -34,8 +34,9 @@ _.extend(PublisherClient.prototype, {
 
   discoverShapes: function(instance, callback) {
     var self = this;
+    var data = { "instance": instance };
     return new Promise(function(resolve, reject) {
-      self.messageClient.invoke('discoverShapes', instance, function(err, resp){
+      self.messageClient.invoke('discoverShapes', data, function(err, resp){
         if(err) {
           reject(err);
           return;
