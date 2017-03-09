@@ -140,7 +140,6 @@ _.extend(StreamMessageReader.prototype, {
       }
       var msg = this.buffer.tryReadContent(this.nextMessageLength);
       if (msg === null) {
-        console.log("partial message");
         return;
       }
       this.nextMessageLength = -1;

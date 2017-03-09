@@ -1,6 +1,6 @@
 {
   "name": "navigator-node",
-  "version": "0.7.20",
+  "version": "0.7.36",
   "description": "A Naveego Navigator extension library for NodeJS",
   "main": "index.js",
   "scripts": {

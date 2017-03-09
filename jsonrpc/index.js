@@ -9,9 +9,18 @@ var RPCMessageClient = function(messageReader, messageWriter, options) {
   this.nextMsgId = 1;
 
   this.openRequests = {};
+  this.notificationHandler = this.options.notificationHandler || {};
 
   this.messageReader.listen(function(data) {
-    self.handleResponse(data);
+    if(data.id) {
+      self.handleResponse(data);
+    } else {
+      self.handleNotification(data);
+    }
+  }, {
+    error: function(err) {
+      console.log(err);
+    }
   });
 }
 
@@ -39,10 +48,20 @@ _.extend(RPCMessageClient.prototype, {
     var callback = this.openRequests[msgId];
     if (!callback) {
       console.warn("No open requests for message with id: " + msgId);
+      return;
     }
 
     callback(data.error, data.result);
     delete this.openRequests[msgId];
+  },
+
+  handleNotification: function(data) {
+    var callback = this.notificationHandler[data.method];
+    if(!callback) {
+      console.warn("No notification handler for: " + data.method);
+      return;
+    }
+    callback(data.params);
   }
 });
 

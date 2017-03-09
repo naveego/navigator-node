@@ -12,6 +12,8 @@ var PublisherClient = function(options) {
     port: 5899,
   }, options || {});
 
+  this.listeners = {};
+
   this.initMessaging();
 }
 
@@ -47,7 +49,26 @@ _.extend(PublisherClient.prototype, {
     });
   },
 
+  publishData: function(instance, shape) {
+    var data = {
+      "instance": instance,
+      "shape": shape,
+    };
+    this.messageClient.invoke("publishData", data);
+  },
+
+  on: function(name, cb) {
+    this.listeners[name] = cb;
+  },
+
+  onDataPointsPublished: function(data) {
+    var cb = this.listeners['dataPointsPublished'];
+    if(cb) cb(data);
+  },
+
   initMessaging: function() {
+    var self = this;
+
     var so;
     var attempts = 0;
     var maxAttempts = 5;
@@ -75,7 +96,13 @@ _.extend(PublisherClient.prototype, {
     var msgReader = new ipc.StreamMessageReader(so);
     var msgWriter = new ipc.StreamMessageWriter(so);
 
-    this.messageClient = new jsonrpc.RPCMessageClient(msgReader, msgWriter);
+    this.messageClient = new jsonrpc.RPCMessageClient(msgReader, msgWriter, {
+      notificationHandler: {
+        "dataPointsPublished": function(data) {
+          self.onDataPointsPublished(data);
+        },
+      },
+    });
   },
 
   onSocketConnect: function(err) {
