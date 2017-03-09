@@ -47,6 +47,27 @@ _.extend(SubscriberClient.prototype, {
     });
   },
 
+  receiveData: function(instance, pipeline, shape, dataPoint, callback) {
+    var self = this;
+    var data = {
+      "instance": instance,
+      "pipeline": pipeline,
+      "shape": shape,
+      "data": dataPoint
+    }
+
+    return new Promise(function(resolve, reject) {
+      self.messageClient.invoke('receiveDataPoint', data, function(err, resp) {
+        if(err) {
+          reject(err);
+          return;
+        }
+
+        resolve(resp);
+      })
+    })
+  },
+
   initMessaging: function() {
     var so;
     var attempts = 0;
