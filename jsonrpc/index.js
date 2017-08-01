@@ -42,7 +42,6 @@ _.extend(RPCMessageClient.prototype, {
   },
 
   handleResponse: function(data) {
-    console.log('handling response:', data);
     var msgId = data.id;
 
     var callback = this.openRequests[msgId];

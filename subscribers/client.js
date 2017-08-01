@@ -17,6 +17,21 @@ var SubscriberClient = function(options) {
 
 _.extend(SubscriberClient.prototype, {
 
+  init: function(settings) {
+    var self = this;
+    var data = { "settings": settings };
+    return new Promise(function(resolve, reject) {
+      self.messageClient.invoke("init", data, function(error, resp) {
+        if(error) {
+          reject(error);
+          return;
+        }
+
+        resolve(resp.result);
+      })
+    });
+  },
+
   testConnection: function(settings) {
     var self = this;
     var data = { "settings": settings };
@@ -66,6 +81,21 @@ _.extend(SubscriberClient.prototype, {
         resolve(resp);
       })
     })
+  },
+
+  dispose: function() {
+    var self = this;
+    var data = {};
+    return new Promise(function(resolve, reject) {
+      self.messageClient.invoke("dispose", data, function(error, resp) {
+        if(error) {
+          reject(error);
+          return;
+        }
+
+        resolve(resp.result);
+      })
+    });
   },
 
   initMessaging: function() {
